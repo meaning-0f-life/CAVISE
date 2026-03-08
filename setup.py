@@ -18,6 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 ALLOWED_REPOS = {"opencda", "artery"}
 OPENCDA_REPO_URL = "https://github.com/meaning-0f-life/OpenCDA"
+ARTERY_REPO_URL = "https://github.com/CAVISE/artery"
 
 
 def get_available_versions(repo_url: str) -> List[Tuple[Literal["tag", "branch"], str]]:
@@ -97,6 +98,8 @@ def clone_repo(repo_base: str, repo_name: str, version: str) -> None:
     """
     if repo_name == "opencda":
         repo_url = OPENCDA_REPO_URL
+    elif repo_name == "artery":
+        repo_url = ARTERY_REPO_URL
     else:
         repo_url = f"{repo_base}{repo_name}"
     if os.path.isdir(repo_name):
@@ -201,6 +204,8 @@ def main() -> None:
         if version is None:
             if repo_name == "opencda":
                 repo_url = OPENCDA_REPO_URL
+            elif repo_name == "artery":
+                repo_url = ARTERY_REPO_URL
             else:
                 repo_url = f"{repo_base}{repo_name}"
             version = select_version_interactive(repo_name, repo_url)
