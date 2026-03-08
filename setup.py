@@ -17,6 +17,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 ALLOWED_REPOS = {"opencda", "artery"}
+OPENCDA_REPO_URL = "https://github.com/meaning-0f-life/OpenCDA"
 
 
 def get_available_versions(repo_url: str) -> List[Tuple[Literal["tag", "branch"], str]]:
@@ -87,13 +88,17 @@ def clone_repo(repo_base: str, repo_name: str, version: str) -> None:
     """
     Clones a Git repository into a directory named after the repo.
 
-    Builds the full URL as repo_base + repo_name. If a directory with that
-    name already exists, logs a message and returns without cloning. Otherwise
-    clones with submodules (recursive=True). If version is given, checks out
-    that branch or tag; otherwise uses the default branch. On clone failure,
-    logs the error and exits the process with code 1.
+    Builds the full URL as repo_base + repo_name, except for opencda which
+    uses OPENCDA_REPO_URL. If a directory with that name already exists,
+    logs a message and returns without cloning. Otherwise clones with submodules
+    (recursive=True). If version is given, checks out that branch or tag;
+    otherwise uses the default branch. On clone failure, logs the error and
+    exits the process with code 1.
     """
-    repo_url = f"{repo_base}{repo_name}"
+    if repo_name == "opencda":
+        repo_url = OPENCDA_REPO_URL
+    else:
+        repo_url = f"{repo_base}{repo_name}"
     if os.path.isdir(repo_name):
         logger.info(f"Repository {repo_name} already exists. Skipping.")
         return
@@ -195,7 +200,10 @@ def main() -> None:
                 version = None
 
         if version is None:
-            repo_url = f"{repo_base}{repo_name}"
+            if repo_name == "opencda":
+                repo_url = OPENCDA_REPO_URL
+            else:
+                repo_url = f"{repo_base}{repo_name}"
             version = select_version_interactive(repo_name, repo_url)
 
         clone_repo(repo_base, repo_name, version)
