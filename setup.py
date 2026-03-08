@@ -191,13 +191,12 @@ def main() -> None:
     logger.info(f"Repositories to process: {repos}")
 
     for repo_name in repos:
-        match repo_name:
-            case "opencda":
-                version = args.opencda_version
-            case "artery":
-                version = args.artery_version
-            case _:
-                version = None
+        if repo_name == "opencda":
+            version = args.opencda_version
+        elif repo_name == "artery":
+            version = args.artery_version
+        else:
+            version = None
 
         if version is None:
             if repo_name == "opencda":
